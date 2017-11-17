@@ -42,3 +42,30 @@ title('Clarified Image')
 
 % Show current progress
 imshowpair(grayscalePhoto,cl,'montage')
+
+% Threshold the doctored image into 3 layers
+mthresh = multithresh(cl,2);
+thresholdImage = imquantize(cl,mthresh);
+figure(2)
+subplot(1,2,1)
+imshow(thresholdImage,[])
+title('Threshold image')
+
+% Pick out the top layer as the tumor
+tumor = thresholdImage;
+for i = 1:length(thresholdImage)
+    for j = 1:length(thresholdImage)
+        if thresholdImage(i,j) < 3
+            tumor(i,j) = 1;
+        end
+    end
+end
+% display the tumor
+figure(2)
+subplot(1,2,2)
+imshow(tumor,[])
+title('Isolated Tumor')
+
+% Show initial and final images together
+figure(3)
+imshowpair(grayscalePhoto,tumor,'montage')
